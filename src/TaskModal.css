@@ -1,0 +1,141 @@
+/* Modal */
+.modal-background {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 20;
+}
+
+.modal-backdrop {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: rgba(30, 30, 30, .7);
+	z-index: 21;
+}
+
+.modal {
+	position:fixed;
+	left: 15%;
+	right:15%;
+	top:10%;
+	height:  70%;
+	background: darkseagreen;
+	z-index: 22;
+	border-radius: 3px;
+	border: 5px solid forestgreen;
+	padding: 10px;
+	display: flex;
+	min-width: 560px;
+	min-height: 400px;
+}
+
+/* LEFT */
+
+.left {
+	position: relative;
+	border-right: 2px solid forestgreen;
+	width: 50%;
+	padding: 10px;
+}
+
+.modal-buttons {
+	width: 50%;
+	position:absolute;
+	bottom:5px;
+	right:5px;
+}
+
+.modal-buttons input {
+	float:right;
+	font-size: 1.5em;
+}
+
+.left textarea {
+	min-height: 5em;
+}
+
+.left label,
+.left input{
+	resize:none;
+	margin: 3px; 
+	font-size: 1.2em;
+}
+
+.left input,
+.left textarea{
+	margin-bottom: 5px;
+	resize: none;
+	height: auto;
+}
+
+.left input[type='text'],
+.left textarea {
+	width:99%;
+}
+
+.left input[type='checkbox'] {
+	margin: 5px 3px;
+}
+
+/* RIGHT */
+.right {
+	width: 50%;
+	padding: 0 10px 10px 10px;
+}
+
+.right textarea {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	resize: none;
+	padding: 0;
+	width: 100%;
+}
+
+.right .text {
+	position:relative;
+	height: 48%;
+	width: 100%;
+	display: inline-table;
+}
+
+.right i {
+	width: 100%;
+	max-height: 4%;
+	text-align: center;
+}
+
+.pagination li a {
+	padding: 10px;
+	border-left: 1px solid gray;
+}
+
+.pagination > li:first-of-type > a {
+	border-left:none;
+}
+
+ul.pagination {
+	border: 1px solid gray;
+	border-radius: 8px;
+	padding: 8px 0 8px 0;
+}
+
+.pagination li a:hover {
+	background: #48a
+}
+
+.table-container nav ul {
+	float:left;
+}
+
+.form-control {
+	line-height: 1em;
+	font-size: 1em;
+}
