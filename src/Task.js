@@ -1,54 +1,95 @@
-import React from 'react';
-import './Task.css'
-import './checkbox.css'
-import CodeEditor from './CodeEditor.js'
-var FontAwesome = require('react-fontawesome')
+import React, {Component} from 'react'
+import FA from 'react-fontawesome'
+import './css/Task.css'
+import DropdownMenu from 'react-dd-menu';
 
-export default function Task({keys, task, complete, onReset, onNext, onSearch, editorRef}) {
-  const com = 'Commands:\n' + keys.join(', ')
+
+var CodeMirror = require('codemirror');
+
+export default class Task extends Component{
+	constructor(props){
+		super(props)
+		this.state = {
+			task: props.task,
+			keys: [],
+			taskInfo: false,
+			complete: false,
+			isMenuOpen: false,
+			onRestart: props.onRestart,
+		}
+		this.editor = null
+		window.t = this
+	}
 	
-	const options = {
-		lineNumbers: true,
-		keyMap: 'vim',
-		dragDrop: false,
-		readOnly: 'nocursor',
+	componentDidMount(){
+		const options = {
+			lineNumbers: true,
+			dragDrop: false,
+			smartIndent: false,
+			fontSize: 20,
+			matchBrackets: true,
+			readOnly: 'nocursor'
+		}
+		
+		const el = document.getElementById("goalEditor")
+		if (el === undefined)
+			return
+
+		this.editor = CodeMirror.fromTextArea(el, options)
+		this.editor.setSize(null, '200px')
+	
+	}
+	
+	infoClicked = () => {
+		this.editor.setValue(this.state.taskInfo === false ? this.state.task.description : this.state.task.goal.text)
+		this.setState({taskInfo: !this.state.taskInfo})
 	}
 
-	
-	return (
-	<div className={"Task main-row " + (complete ? "Task-complete" : "")}>
-		<div className="Task-header">
-			<h2 className="Task-title">{task.title}
-				<span className="author">{task.author}</span>
-				{(task.description !== undefined && task.description.length >= 0) && 
-					<FontAwesome
-						name='info-circle'
-						title={task.description} />
-				}
-			</h2>
-			<div className="Task-buttons">
-				<button className='Task-clickable Task-search' title="Search" onClick={onSearch}>
-					<FontAwesome
-						name="search" />
-				</button>
-				<button className='Task-clickable Task-next' title="Next" onClick={onNext}>
-					<FontAwesome
-						name="step-forward" />
-				</button>
-				<button className='Task-clickable Task-reset' title="Reset" onClick={onReset}>
-					<FontAwesome
-						name="refresh" />
-				</button>
+	keyPressed(key){
+		
+		if (this.state.complete){
+			return
+		}
+		let keys = this.state.keys.slice()
+		keys.push(key)
+		this.setState({keys})
+	}
+
+	restart = () => {
+		this.state.onRestart()
+		this.setState({keys: []})
+	}
+
+	close(){
+		this.setState({isMenuOpen: false})
+	}
+
+	render(){
+		const main = this
+		const style = {background: this.state.complete ? "green" : "none"}
+		const menuOptions = {
+		  isOpen: this.state.isMenuOpen,
+			close: () => main.setState({isMenuOpen: false}),
+			toggle: <button type="button" onClick={() => this.setState({isMenuOpen: !this.state.isMenuOpen})}><FA name="ellipsis-v"/></button>,
+			align: 'right'
+		};
+
+		return (
+		<div className="Task">
+  		<div className="TaskInfo">
+    		<div className="TaskTitle"><h3>{this.state.task.title}</h3><p className="author">by {this.state.task.author}</p><button onClick={this.infoClicked} className="info"><FA name={!this.state.taskInfo ? "info-circle" : "play-circle"}/></button></div>
+    		<textarea id="goalEditor" value={this.state.taskInfo === true ? this.state.task.description : this.state.task.goal.text} readOnly></textarea>
+  		</div>
+  		<div className="TaskProgress">
+    		<div className="TaskTitle"><p>Keys:</p></div>
+    		<textarea className="keys" readOnly value={this.state.keys.join(', ')} style={style}></textarea>
+  		</div>
+  		<div className="TaskButtons">
+ 				<DropdownMenu {...menuOptions}>
+					<li><button onClick={this.restart} >Restart</button></li>
+				</DropdownMenu>
 			</div>
 		</div>
-		<div className="Task-row">
-			<CodeEditor id="goal" ref={editorRef} options={options}/>
-			<textarea className="Task-keys" readOnly='true' value={com}/>
-			<div className="checkbox checkbox-info checkbox-circle">
-		 		<input disabled checked={complete} id="checkbox8" className="styled" type="checkbox" />
-	   		<label htmlFor="checkbox8"></label>
-			</div>
-		</div>
-	</div>
-  );
+		);
+	}
 }

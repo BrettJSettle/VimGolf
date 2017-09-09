@@ -1,5 +1,5 @@
 import './css/TaskBrowser.css'
-import {db, provider, auth} from './firebase.js'
+import {db, auth} from './firebase.js'
 const FilterableTable = require('react-filterable-table');
 const React = require('react');
 
@@ -14,60 +14,52 @@ export default class TaskBrowser extends React.Component {
 		]
 		this.state ={
 			rows: [],
-			authorId: props.authorId,
 			fields: fields,
 			onClose: props.onClose,
-			onLoad: props.onLoad
+			onLoad: props.onLoad,
 		}
+	}
+	
+	removeTask = (taskId) => {
+		db.ref('tasks/' + taskId).set(null)
+		db.ref('users/fb/' + auth().currentUser.uid + '/tasks/' + taskId).set(null)
+		db.ref('solutions/' + taskId).set(null)
+		this.state.onClose()
+	}
+
+	loadTask = (task) => {
+		this.state.onLoad(task)
 	}
 
 	componentDidMount(){
 		this.getTasks()
 	}
 
-	remove(obj){
-	}
-
-	load(res){
-		if (res.id === undefined){
-			return
-		}
-
-		let obj = {
-			title: res.title,
-			author: res.author,
-			description: res.description,
-			solution: res.solution,
-			start: {
-				code: res.startCode,
-			},
-			goal: {
-				code: res.goalCode,
-			}
-		}
-
-		if (res.startCursor !== null){
-			obj.start.cursor = JSON.parse(res.startCursor)
-		}
-		if (res.goalCursor !== null){
-			obj.goal.cursor = JSON.parse(res.goalCursor)
-		}
-		if (res.mode !== null){
-			obj.mode = res.mode
-		}
-		if (res.theme !== null){
-			obj.theme = res.theme
-		}
-		
-
-		this.state.onLoad(obj)
-	}
-
 	getTasks(){
-		//const main = this;
+		const main = this;
+		let rows = []
 		const tasks = db.ref('tasks')
-		tasks.on('value', function(val) {
-			console.log(val)
+		if (!tasks)
+			return
+		tasks.on('value', function(tasks) {
+			const taskList = tasks.val()
+			if (taskList === null){
+				return
+			}
+			Object.keys(taskList).forEach(function(d) {
+				rows.push({
+					title: taskList[d].title,
+					author: taskList[d].author,
+					description: taskList[d].description,
+					buttons: <div className="task-row-buttons">
+						<button onClick={() => main.loadTask(taskList[d])}>Load</button>
+						{auth().currentUser !== null && taskList[d].authorId === auth().currentUser.uid && 
+							<button onClick={() => main.removeTask(d)}>Remove</button>
+						}
+					</div>
+				})
+			})
+			main.setState({rows: rows})
 		})
 	}
 

@@ -196,47 +196,19 @@ function getItems(vars)  {
 }
 
 export const tasks = [
-	/*{title: "Hello, World!",
-		start: {
-			code: '',
-		}, goal: {
-			code: 'Hello, World!',
+	{start: {
+			text: "",
+			selections: []
 		},
-	},*/
-	{title: "Hello, World!",
-		description: "INFO",
-		author: "BRETT",
-		start: {
-			code: 'Hello, World!',
-			cursor: {
-				mode: 'visual',
-				selections: [
-					{
-						anchor: {line: 0, ch: 11},
-						head: {line: 0, ch: 7}
-					},
-				]
-			}
-		}, goal: {
-			code: 'Hello, World!',
-			cursor: {
-				mode: 'visual',
-				selections: [
-					{
-						anchor: {line: 0, ch: 11},
-						head: {line: 0, ch: 4}
-					},
-				]
-			}
+	 	goal: {
+			text: "Hello, World",
+			selections: []
 		},
+	 	description: "Introductory Task",
+		title: "Hello, World",
+		author: "Brett Settle",
+		authorId: "NONE"
 	},
-	{title: 'Hello Python',
-		description: 'An example task to get you started',
-		mode: 'python',
-		goal: {
-			code: 'print("Hello, World!")',
-		}
-	}
 ]
 
 export const abbrevs = {
@@ -254,6 +226,29 @@ export const abbrevs = {
 	'Escape': 'Esc',
 }
 
+export function taskComplete(editor, task) {
+	if (editor.getValue() !== task.goal.text)
+		return false;
+	return true;
+}
+
+export function serialize(obj){
+	if (obj === undefined || obj instanceof Function || obj === null)
+		return
+	if (obj instanceof Array){
+		return obj.map((a) => serialize(a))
+	}else if (typeof(obj) === 'object'){
+		let newObj = {}
+		Object.keys(obj).forEach(function(k){
+			const v = serialize(obj[k])
+			if (v !== undefined)
+				newObj[k] = v
+		})
+		return newObj
+	}else{
+		return obj
+	}
+}
 
 export const themeItems = getItems(themes)
 export const modeItems = getItems(modes)

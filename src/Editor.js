@@ -1,12 +1,11 @@
 import React from 'react'
+import RecordPanel from './RecordPanel.js'
 import Select from 'react-select';
-import FA from 'react-fontawesome'
 import 'react-select/dist/react-select.css';
 import 'codemirror/keymap/vim.js'
 import './css/Editor.css'
 import {themeItems, modeItems} from './constants.js';
-import {db, auth, provider} from './firebase.js'
-import {abbrevs} from './constants.js'
+import {abbrevs, serialize} from './constants.js'
 
 var CodeMirror = require('codemirror')
 
@@ -36,42 +35,6 @@ export function getModeStr(mode, subMode){
 	 return modeStr
 }
 
-class Recording {
-	constructor(doc, cursor, selections){
-		this.start = doc
-		this.startCursor = cursor
-		this.startSelections = selections
-		this.goal = null
-		this.goalCursor = null
-		this.goalSelections = null
-		this.solution = []
-	}
-
-	update = (key) => {
-		this.solution.push(key)
-	}
-
-	finished = (doc, cursor, selections) => {
-		this.goal = doc
-		this.goalCursor = cursor
-		this.goalSelections = selections
-	}
-
-	asObject = () => {
-		var obj = {}
-		obj['start'] = {
-			doc: this.start,
-			cursor: this.startCursor,
-			selections: this.startSelections}
-		obj['goal'] = {
-			doc: this.goal,
-			cursor: this.goalCursor,
-			selections: this.goalSelections
-		}
-		obj.solution = this.solution
-		return obj
-	}
-}
 
 export default class Editor extends React.Component {
 	constructor(props){
@@ -80,14 +43,13 @@ export default class Editor extends React.Component {
 			fontSize: 12,
 			mode: props.mode || 'javascript',
 			theme: props.theme || 'monokai',
-			recording: null,
-			user: null,
 			vimState: '',
 			value: props.value || '',
 			...props
 		}
-		this.toolbar = props.toolbar || <div />
+		this.recordPanel = null
 		this.editor = null
+		window.editor = this
 	}
 
 	clearMode() {
@@ -108,11 +70,11 @@ export default class Editor extends React.Component {
 		this.editor.setOption('theme', theme.value)
 	}
 
-	componentWillMount() {
-	 	const comp = this
-	 	auth().onAuthStateChanged(function(u){
-			comp.setState({user: u})
-		});
+	getState = () => {
+		return {
+				text: this.editor.getValue(),
+				selections: serialize(this.editor.listSelections())
+			}
 	}
 
 	componentDidMount() {
@@ -137,7 +99,7 @@ export default class Editor extends React.Component {
 		
 		this.editor.setSize(null, '500px')
 
-		window.editor = this.editor
+		window.editor = this
 		const mirror = this.editor
 
 		mirror.on('paste', ignoreEvent)
@@ -150,9 +112,7 @@ export default class Editor extends React.Component {
 			mirror.focus()
 			ignoreEvent(m, e)
 		})
-		if (this.state.onKeyPress){
-			mirror.on('keydown', (a, b) => this.onKeyPress(a, b));
-		}
+		mirror.on('keydown', (a, b) => this.onKeyPress(a, b));
 		
 		mirror.on('vim-mode-change', function(e) {
 			panel.setState({vimState: getModeStr(e.mode, e.subMode)})
@@ -160,6 +120,7 @@ export default class Editor extends React.Component {
 		
 		this.editor.on('cursorActivity', () => this.onChange())
 		this.editor.on('change', () => this.onChange())
+		this.recordPanel.editor = this.editor
 	}
 
 	getCursorMode(){
@@ -175,10 +136,11 @@ export default class Editor extends React.Component {
 
 	onKeyPress = (a, keyEvent) => {
 		var key = abbrevs[keyEvent.key] || keyEvent.key
-		if (this.state.recording !== null){
-			this.state.recording.update(key)
+		if (this.recordPanel.state.recording !== null){
+			this.recordPanel.keyPressed(key)
 		}
-		console.log(this.state.recording.solution)
+		if (this.state.onKeyPress)
+			this.state.onKeyPress(key)
 	}
 
 	onChange = () => {
@@ -192,77 +154,23 @@ export default class Editor extends React.Component {
 		this.editor.refresh()
 	}
 
-	record = () => {
-		var recording = new Recording(this.editor.getDoc().copy(), this.editor.getCursor(), this.editor.listSelections())
-		window.rec = recording
-		this.setState({recording: recording})
-		this.editor.focus()
+	loadState(state){
+		this.editor.setValue(state.text)
+		if (state.cursor){
+			// figure out how to apply vim mode
+			this.editor.setSelections(state.selections)
+		}
 	}
 
-	finishedRecording = () => {
-		this.state.recording.finished(this.editor.getDoc().copy(), this.editor.getCursor(), this.editor.listSelections())
-		this.editor.swapDoc(this.state.recording.start)
-		this.editor.setCursor(this.state.recording.startCursor)
-		this.editor.setSelections(this.state.recording.startSelections)
-		
-		this.saveRecording()
-	}
 
-	login = () => {
-	  const result = auth().signInWithPopup(provider)
-		this.setState({user: result.user});
-	}
-
-	logout = () => {
-		auth().signOut()
-		this.setState({user: null});
-	}
-
-	saveRecording = () => {
-		var recording = this.state.recording.asObject()
-
-		console.log(recording)
-
-		db.ref('tasks').push(recording)
-
-		this.setState({recording: null})
-		this.editor.focus()
-	}
-	
 	render(){
 		const fontSizes = [8, 10, 12, 14, 16, 18, 24, 32, 48, 64].map(function(a){ return {value: a, label: a.toString()} })
 		const comp = this;
 		return (
 			<div className="Editor">
 					<div className="control-container">
-    				<div className="div-left">
-							{this.state.user === null ?
-							<ul className="button-tab">
-								<li>
-									<button placeholder="Login to Facebook to save tasks" onClick={this.login} className="Login">Login</button>
-								</li>
-							</ul> :
-							this.state.recording !== null ?
-      				<ul className="button-tab">
-								<li>
-									<button placeholder="Save as new task" className="StopRecord"onClick={comp.finishedRecording}><FA name="check"/></button>
-								</li>
-								<li>
-									<button placeholder="Cancel task" className="CancelRecord" onClick={() => comp.setState({recording: null})}><FA name="times"/></button>
-								</li>
-							</ul>
-							:
-							<ul className="button-tab">
-								<li>
-									<button placeholder="Record a new task" className="Record" onClick={comp.record}><FA name="circle"/></button>
-								</li>	
-								<li> { this.state.user !== undefined ? <p>Hi {this.state.user.displayName.split(' ')[0]} </p> : <p />}
-									<button className="Logout" onClick={this.logout} >Logout</button>
-								</li>
-							</ul>
-							}
-    				</div>
-						{/* this.toolbar */}
+						<RecordPanel
+							ref={(a) => { comp.recordPanel = a} } />
     				<div className="div-right">
       				<ul className="button-tab">
         				<li>
