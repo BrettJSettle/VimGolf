@@ -11,6 +11,7 @@
     "react": "^15.6.1",
     "react-data-grid": "^2.0.53",
     "react-data-grid-addons": "^2.0.53",
+    "react-dd-menu": "^2.0.2",
     "react-dom": "^15.6.1",
     "react-dropdown": "^1.2.5",
     "react-facebook-login": "^3.6.2",
