@@ -1,95 +1,23 @@
-/* Toolbar */
-.control-container {
-	height: 35px;
-}
-
-.div-right {
-	display:flex;
-	width:fit-content;
-	float:right;
-}
-
-
-.div-left button {
-	height: 100%;
-	background: none;
-	border: none;
-	outline: none;
-	color:white;
-	font-size: 1.25em;
-}
-
-.div-left button:hover {
-	background: rgba(255, 255, 255, .3);
-	opacity: .5;
-}
-
-.div-left button.Record {
-	color: red;
-}
-
-.div-left button.CancelRecord {
-	color: red;
-}
-
-.div-left button.StopRecord {
-	color: green;
-}
-
-.Select-menu-outer {
-	z-index: 10;
-}
-
-.div-left{
-  float:left;
-  padding-left:10px;
-	height: 100%;
-}
-.div-right{
-  float:right;
-  padding-right:10px;
-	height: 100%;
-}
-.button-tab {
-  height:100%;
-  line-height:30px;
-}
-.button-tab li {
-  list-style-type:none;
-  float:left;
-	height: 100%;
-}
-
-.button-tab li p {
-	background: none;
-	color: white;
-	display: inline;
-}
-.div-right li {
-  padding-left:10px;
-}
-ul.button-tab {
-    list-style-type:none;
-    padding:0px;
-    margin:0px;
-}
-
 /* Editor */
 .Editor {
 	display: inherit;
-	border-bottom: 2px solid white;
+	height:100%;
 }
-
-.VimState {
-	background: black;
-	width: 100%;
-	margin: 0;
+.Editor-container {
+	position: absolute;
+	bottom: 18px;
+	left: 0;
+	right: 0;
+	top: 0px;
+}
+.Editor-content {
+	height:100%;
+	position:relative;
 }
 
 .CodeMirror {
-	width: 100%;
-	min-height: 60%;
-	border-top: 2px solid white;
+	border-top:0;
+	height:auto;
 }
 
 .CodeMirror-selected {
@@ -97,6 +25,10 @@ ul.button-tab {
 }
 
 .VimState {
+	position:absolute;
+	bottom: 0;
+	background: black;
+	margin: 0;
 	color: #d0d0d0;
-	min-height:1em;
+	height:19px;
 }

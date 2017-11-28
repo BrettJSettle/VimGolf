@@ -1,5 +1,5 @@
 import React from 'react'
-import './Header.css'
+import './css/Header.css'
 
 export default function Header({title, subtitle}) {
 	return (

@@ -1,0 +1,59 @@
+/* Editor Toolbar */
+.button-list {
+  height:100%;
+  line-height:30px;
+}
+.button-list li {
+  list-style-type:none;
+  float:left;
+	height: 100%;
+}
+
+.button-list li p {
+	background: none;
+	color: white;
+	display: inline;
+}
+ul.button-list {
+	list-style-type:none;
+	padding:0px;
+	margin:0px;
+	float:left;
+}
+.button-list.right {
+	float:right;
+}
+
+.browse {
+	height: 100%;
+	background: transparent;
+	border: 2px solid white;
+	border-radius: 0;
+	border-top: 0;
+	border-bottom: 0;
+	color: white;
+}
+.browse:hover {
+	background: rgba(200, 200, 200, .15);
+}
+.Toolbar {
+	height:32px;
+	border-bottom: 2px solid white;
+	border-top: 2px solid white;
+
+}
+.Toolbar .fontSize {
+	border-radius: 5px;
+	border:1px solid #ddd;
+	line-height: 1.25em;
+	width: 45px;
+	text-align: center;
+	font-size: medium;
+}
+.Toolbar .theme {
+	line-height: 1.25em;
+	text-align: center;
+	font-size: medium;
+	max-width:150px;
+}
+

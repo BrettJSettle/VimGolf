@@ -1,84 +1,63 @@
 import './css/TaskBrowser.css'
-import {db, auth} from './firebase.js'
-const FilterableTable = require('react-filterable-table');
-const React = require('react');
+import React, {Component} from 'react'
+import FilterableTable from 'react-filterable-table';
 
-export default class TaskBrowser extends React.Component {
+export default class TaskBrowser extends Component {
 	constructor(props){
 		super(props)
 		const fields = [
-			{name: 'title', displayName: 'Title', inputFilterable: true, sortable: true},
-			{name: 'author', displayName: 'Author', inputFilterable: true, sortable: true},
+			{name: 'buttons', displayName: ''},
+			{name: 'name', displayName: 'Name', inputFilterable: true, sortable: true},
 			{name: 'description', displayName: 'Description', inputFilterable: true, sortable: true},
-			{name: 'buttons', displayName: ''}
+			{name: 'entries', displayName: 'Entries', inputFilterable: true, sortable: true},
 		]
-		this.state ={
-			rows: [],
-			fields: fields,
-			onClose: props.onClose,
-			onLoad: props.onLoad,
-		}
-	}
-	
-	removeTask = (taskId) => {
-		db.ref('tasks/' + taskId).set(null)
-		db.ref('users/fb/' + auth().currentUser.uid + '/tasks/' + taskId).set(null)
-		db.ref('solutions/' + taskId).set(null)
-		this.state.onClose()
+		this.fields= fields
 	}
 
-	loadTask = (task) => {
-		this.state.onLoad(task)
+	loadTask = (d) => {
+		const main = this
+		const ID = d.url.split('/').pop()
+		fetch('http://thesettleproject.com/cgi-bin/vimgolf/challenges.py?challenge=' + ID)
+		.then(resp => resp.json())
+		.then(json => {
+			d.in = json['data']['in']
+			d.out = json['data']['out']
+			main.props.onLoad(d)
+		})
+		this.props.onClose()
 	}
 
-	componentDidMount(){
-		this.getTasks()
-	}
-
-	getTasks(){
-		const main = this;
+	getTasks = () => {
+		const main = this
 		let rows = []
-		const tasks = db.ref('tasks')
-		if (!tasks)
-			return
-		tasks.on('value', function(tasks) {
-			const taskList = tasks.val()
-			if (taskList === null){
-				return
-			}
-			Object.keys(taskList).forEach(function(d) {
+		this.props.tasks.forEach(function(d) {
 				rows.push({
-					title: taskList[d].title,
-					author: taskList[d].author,
-					description: taskList[d].description,
+					name: d.name,
+					description: d.description,
+					entries: d.entries,
 					buttons: <div className="task-row-buttons">
-						<button onClick={() => main.loadTask(taskList[d])}>Load</button>
-						{auth().currentUser !== null && taskList[d].authorId === auth().currentUser.uid && 
-							<button onClick={() => main.removeTask(d)}>Remove</button>
-						}
+						<button onClick={() => main.loadTask(d)}>Load</button>
 					</div>
 				})
 			})
-			main.setState({rows: rows})
-		})
+		return rows
 	}
 
-
 	render() {
+		const rows = this.props.tasks ? this.getTasks() : []
 		return  (
 			<div className="TaskBrowser">
-				<div className='TaskBrowser-window'>
-					<FilterableTable
+				{this.props.tasks.length === 0 ?
+					<h3>Loading tasks</h3>
+					:
+				<FilterableTable
 						namespace='vimTasks'
-						initialSort='title'
-						data={this.state.rows}
-						fields={this.state.fields}
+						initialSort='name'
+						data={rows}
+						fields={this.fields}
 						noRecordsMessage="There are no tasks available."
 						noFilteredRecordsMessage="No results match your search. Be less specific"/>
-					<div className='modal-buttons'>
-						<button className='cancel' onClick={() => this.state.onClose()}>Cancel</button>
-					</div>
-				</div>
+				}
 			</div>
 		)
 	}

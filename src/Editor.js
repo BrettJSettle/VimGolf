@@ -1,11 +1,8 @@
 import React from 'react'
-import RecordPanel from './RecordPanel.js'
-import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 import 'codemirror/keymap/vim.js'
 import './css/Editor.css'
-import {themeItems, modeItems} from './constants.js';
-import {abbrevs, serialize} from './constants.js'
+import {themes, modes, abbrevs, serialize} from './constants.js'
 
 var CodeMirror = require('codemirror')
 
@@ -40,14 +37,13 @@ export default class Editor extends React.Component {
 	constructor(props){
 		super(props)
 		this.state = {
-			fontSize: 12,
+			fontSize: props.fontSize || 12,
 			mode: props.mode || 'javascript',
 			theme: props.theme || 'monokai',
 			vimState: '',
 			value: props.value || '',
 			...props
 		}
-		this.recordPanel = null
 		this.editor = null
 		window.editor = this
 	}
@@ -58,16 +54,6 @@ export default class Editor extends React.Component {
 		} else if (this.editor.state.vim.insertMode) {
 			CodeMirror.Vim.exitInsertMode(this.editor)
 		}
-	}
-
-	handleMode = (mode) => {
-		this.setState({mode: mode.value})
-		this.editor.setOption('mode', mode.value)
-	}
-
-	handleTheme = (theme) => {
-		this.setState({theme: theme.value})
-		this.editor.setOption('theme', theme.value)
 	}
 
 	getState = () => {
@@ -82,22 +68,22 @@ export default class Editor extends React.Component {
 			lineNumbers: true,
 			dragDrop: false,
 			smartIndent: false,
-			fontSize: 20,
+			fontSize: 12,
 			mode: this.state.mode,
 			theme: this.state.theme,
 			keyMap: 'vim',
 			matchBrackets: true,
 			styleSelectedText: true,
 		}
-		
+
 		const panel = this
 		const el = document.getElementById(this.state.id)
 		if (el === undefined)
 			return
 
 		this.editor = CodeMirror.fromTextArea(el, options)
-		
-		this.editor.setSize(null, '500px')
+		const height = '100%';
+		this.editor.setSize(null, height)
 
 		window.editor = this
 		const mirror = this.editor
@@ -120,7 +106,6 @@ export default class Editor extends React.Component {
 		
 		this.editor.on('cursorActivity', () => this.onChange())
 		this.editor.on('change', () => this.onChange())
-		this.recordPanel.editor = this.editor
 	}
 
 	getCursorMode(){
@@ -136,21 +121,20 @@ export default class Editor extends React.Component {
 
 	onKeyPress = (a, keyEvent) => {
 		var key = abbrevs[keyEvent.key] || keyEvent.key
-		if (this.recordPanel.state.recording !== null){
+		/*if (this.recordPanel.state.recording !== null){
 			this.recordPanel.keyPressed(key)
-		}
+		}*/
 		if (this.state.onKeyPress)
 			this.state.onKeyPress(key)
 	}
 
-	onChange = () => {
-		if (this.state.onChange)
-			this.state.onChange()
+	componentWillUpdate(n){
+		//console.log(n)
 	}
 
 	handleFontSize = (a) => {
-		this.setState({fontSize: a.value})
-		document.getElementsByClassName('CodeMirror')[0].style['fontSize'] = a.value + "px"
+		this.setState({fontSize: a})
+		document.getElementsByClassName('CodeMirror')[0].style['fontSize'] = a + "px"
 		this.editor.refresh()
 	}
 
@@ -164,49 +148,21 @@ export default class Editor extends React.Component {
 
 
 	render(){
-		const fontSizes = [8, 10, 12, 14, 16, 18, 24, 32, 48, 64].map(function(a){ return {value: a, label: a.toString()} })
+		const themeOptions = themes.map(function(theme, k){
+			return <option key={k} value={theme}>{theme}</option>
+		})
+		const modeOptions = modes.map(function(mode, k){
+			return <option key={k} value={mode}>{mode}</option>
+		})
+
 		const comp = this;
 		return (
 			<div className="Editor">
-					<div className="control-container">
-						<RecordPanel
-							ref={(a) => { comp.recordPanel = a} } />
-    				<div className="div-right">
-      				<ul className="button-tab">
-        				<li>
-									<Select className="EditorFontSelect"
-										value={this.state.fontSize}
-										options={fontSizes}
-										clearable={false}
-										autosize={false}
-										style={{width: '60px', outline: 'none'}}
-										onChange={this.handleFontSize}
-									/>
-        				</li>
-        				<li>
-									<Select className="EditorThemeSelect"
-										value={this.state.theme}
-										options={themeItems}
-										clearable={false}
-										autosize={false}
-										style={{width: '150px'}}
-										onChange={this.handleTheme}
-									/>
-        				</li>
-        				<li>
-									<Select className="EditorModeSelect"
-										value={this.state.mode}
-										options={modeItems}
-										clearable={false}
-										autosize={false}
-										style={{width: '150px'}}
-										onChange={this.handleMode}
-									/>
-        				</li>
-      				</ul>
-    				</div>
+				<div className="Editor-container">
+					<div className="Editor-content">
+						<textarea id={this.state.id} />
+					</div>
 				</div>
-				<textarea id={this.state.id} />
 		  	<p className='VimState' >{this.state.vimState}</p>
 			</div>
 		)

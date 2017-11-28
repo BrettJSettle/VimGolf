@@ -170,14 +170,14 @@ import "codemirror/mode/z80/z80.js"
 
 
 
-const themes = ["3024-day", "3024-night", "abcdef", "ambiance", "ambiance-mobile", "base16-dark", "base16-light", "bespin", 
+export const themes = ["3024-day", "3024-night", "abcdef", "ambiance", "ambiance-mobile", "base16-dark", "base16-light", "bespin", 
 "blackboard", "cobalt", "colorforth", "dracula", "duotone-dark", "duotone-light", "eclipse", "elegant", "erlang-dark", 
 "hopscotch", "icecoder", "isotope", "lesser-dark", "liquibyte", "material", "mbo", "mdn-like", "midnight", "monokai", 
 "neat", "neo", "night", "panda-syntax", "paraiso-dark", "paraiso-light", "pastel-on-dark", "railscasts", "rubyblue", "seti", 
 "solarized", "the-matrix", "tomorrow-night-bright", "tomorrow-night-eighties", "ttcn", "twilight", "vibrant-ink", "xq-dark", 
 "xq-light", "yeti", "zenburn"]
 
-const modes = ["apl", "asciiarmor", "asn.1", "asterisk", "brainfuck", "clike", "clojure", "cmake", "cobol", "coffeescript", 
+export const modes = ["apl", "asciiarmor", "asn.1", "asterisk", "brainfuck", "clike", "clojure", "cmake", "cobol", "coffeescript", 
 "commonlisp", "crystal", "css", "cypher", "d", "dart", "diff", "django", "dockerfile", "dtd", "dylan", "ebnf", "ecl", "eiffel", 
 "elm", "erlang", "factor", "fcl", "forth", "fortran", "gas", "gfm", "gherkin", "go", "groovy", "haml", "handlebars", "haskell", 
 "haskell-literate", "haxe", "htmlembedded", "htmlmixed", "http", "idl", "javascript", "jinja2", "jsx", "julia", "livescript", "lua", 
@@ -250,5 +250,3 @@ export function serialize(obj){
 	}
 }
 
-export const themeItems = getItems(themes)
-export const modeItems = getItems(modes)

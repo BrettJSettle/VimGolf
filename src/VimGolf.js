@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import Select from 'react-select'
+import {SplitPane} from 'react-split-pane'
 import TaskBrowser from './TaskBrowser.js'
-import Task from './Task.js'
+import {taskComplete} from './constants.js'
+import ToolBar from './ToolBar.js'
+import TaskView from './TaskView.js'
 import Editor from './Editor.js'
-import {auth} from './firebase.js'
-import {tasks, taskComplete} from './constants.js'
 
 require('codemirror/keymap/vim.js')
 require('codemirror/addon/selection/mark-selection.js')
@@ -20,22 +20,18 @@ export default class VimGolf extends Component {
   constructor(props){
 		super();
 		this.state = {
-			currentTask: tasks[0],
+			currentTask: null,
 			user: null,
 			mode: 'editor',
 			browsing: false
 		}
 		this.editor = null
 		this.taskPanel = null
-		window.vg = this
 	}
 
   componentDidMount(){
 		this.editor.editor.focus()
 		const comp = this
-		auth().onAuthStateChanged(function(a){
-			comp.setState({user: null})
-		})
 	}
 
 	onChange(){
@@ -65,7 +61,25 @@ export default class VimGolf extends Component {
 		this.loadTask(this.state.currentTask)
 	}
 
-  render() {
+
+	render() {
+		const main = this;
+		return (
+			<div className="VimGolf">
+				<ToolBar />
+				<SplitPane split='vertical' defaultSize={300} className="VimGolf-split">
+					<Editor id="editor"
+						ref={(a) => main.editor = a }
+						onKeyPress={(k) => main.onKeyPress(k)}
+						onChange={() => main.onChange()}
+					/>
+					<TaskView />
+				</SplitPane>
+			</div>
+		)
+	}
+/*
+  render_old() {
 		const main = this;
 		const modes = [
 			{label: 'editor', value: 'editor'},
@@ -114,15 +128,8 @@ export default class VimGolf extends Component {
 						/>
 					}
 				</div>
-				{this.state.mode === 'tasks' && this.state.currentTask && 
-					<Task 
-						ref={(tp) => { main.taskPanel = tp } }
-						task={this.state.currentTask}
-						keys={this.state.keys}
-						onRestart={this.onRestart}
-					/>
-				}
 	  	</div>
     );
   }
+	*/
 }

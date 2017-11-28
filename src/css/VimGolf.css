@@ -12,26 +12,6 @@
 	overflow-y: hidden;
 }
 
-.facebook-span {
-	position: absolute;
-	top: 0;
-	right: 0;
-	margin: 30px;
-	color: white;
-	background-color: #3b5998;
-	border: 2px solid white;
-	border-radius: 20%;
-	font-size: 20px;
-}
-
-.facebook-span:hover {
-	border: 2px solid gray;
-}
-
-.facebook-span:active {
-	opacity: .8;
-}
-
 .main-row {
 	max-width: 60%;
 	margin: auto;

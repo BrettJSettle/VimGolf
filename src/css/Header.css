@@ -1,13 +1,15 @@
 
 /* HEADER */
 .Header {
-  font-family:Roboto, sans-serif;
+  font-family:monospace, sans-serif;
 	background-color: #222;
-  padding: 30px;
-  color: white;
+  padding: 10px 20px;
+  color: lightgreen;
+	height:80px;
 }
 
 .Header h1 {
+	font-size: 2rem;
 	margin: 0px;
 }
 
