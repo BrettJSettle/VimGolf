@@ -24,7 +24,6 @@ export default class TaskBrowser extends Component {
 			d.out = json['data']['out']
 			main.props.onLoad(d)
 		})
-		this.props.onClose()
 	}
 
 	getTasks = () => {

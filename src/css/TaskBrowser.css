@@ -47,7 +47,7 @@
 }
 .filterable-table-container table.filterable-table thead tr th span.fa {
   padding-left: 8px;
-  color: #000;
+  color: #fff;
 }
 .filterable-table-container table.filterable-table tfoot tr td {
   font-weight: 700;

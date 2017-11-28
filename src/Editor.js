@@ -64,7 +64,7 @@ export default class Editor extends React.Component {
 	}
 
 	componentDidMount() {
-		const options = {
+		let options = {
 			lineNumbers: true,
 			dragDrop: false,
 			smartIndent: false,
@@ -75,6 +75,8 @@ export default class Editor extends React.Component {
 			matchBrackets: true,
 			styleSelectedText: true,
 		}
+		if (this.props.hasOwnProperty('editorOptions'))
+			options = Object.assign(options, this.props.editorOptions)
 
 		const panel = this
 		const el = document.getElementById(this.state.id)
@@ -98,14 +100,12 @@ export default class Editor extends React.Component {
 			mirror.focus()
 			ignoreEvent(m, e)
 		})
-		mirror.on('keydown', (a, b) => this.onKeyPress(a, b));
+		mirror.on('keyup', (a, b) => this.onKeyPress(a, b));
 		
 		mirror.on('vim-mode-change', function(e) {
 			panel.setState({vimState: getModeStr(e.mode, e.subMode)})
 		});
 		
-		this.editor.on('cursorActivity', () => this.onChange())
-		this.editor.on('change', () => this.onChange())
 	}
 
 	getCursorMode(){

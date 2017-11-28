@@ -14,18 +14,30 @@ class App extends Component {
 		super()
 		this.state = {
 			keys: [],
-			task: undefined,
+			task: undefined, 
 			tasks: [],
 			browsing: false,
 			mode: 'javascript',
 			theme: 'monokai',
-			fontSize: 12
+			fontSize: 12,
+			complete: false
 		}
 		this.editor = null
 	}
 
 	onKeyPress = (k) => {
-		console.log("Pressed " + k)
+		if (this.state.complete)
+			return
+		let newKeys = this.state.keys.slice()
+		newKeys.push(k)
+		let complete = false
+
+		let value = this.editor.editor.getValue()
+
+		if (value === this.state.task.out){
+			complete = true
+		}
+		this.setState({keys: newKeys, complete: complete})
 	}
 
 	toggleBrowser = () => {
@@ -44,8 +56,9 @@ class App extends Component {
 	}
 
 	onLoad = (task) => {
-		console.log(task)
-		this.setState({task: task})
+		this.setState({task: task, keys:[], complete:false, browsing: false})
+		this.editor.editor.setValue(task['in'])
+		window.taskView.editor.editor.setValue(task['out'])
 	}
 
 	render() {
@@ -58,7 +71,10 @@ class App extends Component {
 					theme={this.state.theme}
 					fontSize={this.state.fontSize}
 					browsing={this.state.browsing}
-					onChange={(k, v) => {main.setState({k, v})}}
+					onChange={(k, v) => {
+						console.log(k + ' ' + v)
+						main.setState({k, v})
+					}}
 					toggleBrowser={main.toggleBrowser}
 				/>
 				{this.state.browsing ?
@@ -77,10 +93,13 @@ class App extends Component {
 						onKeyPress={(k) => main.onKeyPress(k)}
 					/>
 					<Task
+						mode={this.state.mode}
+						theme={this.state.theme}
+						fontSize={this.state.fontSize}
 						task={this.state.task}
-						keys={this.state.keys}
-						tasks={this.state.tasks}
-						browsing={this.state.browsing}/>
+						onRestart={() => {main.onLoad(main.state.task)}}
+						complete={this.state.complete}
+						keys={this.state.keys}/>
 				</SplitPane>}
 			</div>
     );
