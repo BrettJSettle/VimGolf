@@ -51,73 +51,7 @@
 }
 
 .TaskTitle button {
-	font-size: .7em;
+	font-size: .5em;
+	vertical-align:middle;
 }
 
-/*
-.Task button {
-	background: none;
-	border: none;
-	color: white;
-}
-.Task textarea {
-	resize: none;
-	width: 100%;
-	background: none;
-}
-
-.TaskInfo {
-	width: 60%;
-}
-
-.TaskTitle {
-	display: flex;
-	height: 30px;
-}
-.TaskTitle button {
-	font-size: 1.4em;
-}
-
-.TaskProgress {
-	width: 40%;
-	position:relative;
-}
-
-.TaskProgress textarea {
-	position:absolute;
-	top:30px;
-	bottom:0px;
-	color:white;
-}
-
-.TaskButtons {
-	position:absolute;
-	right:5px;
-	font-size: 1.5em;
-	top:0;
-}
-
-.dd-menu-items {
-	position:absolute;
-	list-style: none;
-	background: white;
-	color: black;
-	font-size: .8em;
-	border-radius: 5px;
-}
-
-.dd-items-right button {
-	color:black;
-}
-
-.dd-items-right li:hover {
-	background: gray;
-}
-
-.dd-items-right {
-	list-style: none;
-	padding-left: 0;
-	padding-right: 0;
-	margin-bottom: 0px;
-}
-*/
