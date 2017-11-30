@@ -26,7 +26,7 @@ class App extends Component {
 	}
 
 	onKeyPress = (k) => {
-		if (this.state.complete)
+		if (this.state.complete || this.state.task === undefined)
 			return
 		let newKeys = this.state.keys.slice()
 		newKeys.push(k)
@@ -70,10 +70,10 @@ class App extends Component {
 					mode={this.state.mode}
 					theme={this.state.theme}
 					fontSize={this.state.fontSize}
+					task={this.state.task}
 					browsing={this.state.browsing}
 					onChange={(k, v) => {
-						console.log(k + ' ' + v)
-						main.setState({k, v})
+						main.setState({k: v})
 					}}
 					toggleBrowser={main.toggleBrowser}
 				/>

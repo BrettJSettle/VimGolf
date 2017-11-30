@@ -1,27 +1,14 @@
 import React, {Component} from 'react'
 import FA from 'react-fontawesome'
 import './css/Task.css'
-import DropdownMenu from 'react-dd-menu';
 import Editor from './Editor.js'
 
-var CodeMirror = require('codemirror');
 
 export default class TaskView extends Component{
 	constructor(props){
 		super(props)
 		this.editor = undefined
 		window.taskView = this
-	}
-
-	componentDidMount(){
-		const options = {
-			lineNumbers: true,
-			dragDrop: false,
-			smartIndent: false,
-			fontSize: 20,
-			matchBrackets: true,
-			readOnly: 'nocursor'
-		}
 	}
 
 	close(){
@@ -57,7 +44,6 @@ export default class TaskView extends Component{
 	}
 
 	render(){
-		const main = this
 		let content = <h2>No Task Selected</h2>;
 		const task = this.props.task
 		

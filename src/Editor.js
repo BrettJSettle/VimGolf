@@ -2,7 +2,7 @@ import React from 'react'
 import 'react-select/dist/react-select.css';
 import 'codemirror/keymap/vim.js'
 import './css/Editor.css'
-import {themes, modes, abbrevs, serialize} from './constants.js'
+import {abbrevs, serialize} from './constants.js'
 
 var CodeMirror = require('codemirror')
 
@@ -148,14 +148,6 @@ export default class Editor extends React.Component {
 
 
 	render(){
-		const themeOptions = themes.map(function(theme, k){
-			return <option key={k} value={theme}>{theme}</option>
-		})
-		const modeOptions = modes.map(function(mode, k){
-			return <option key={k} value={mode}>{mode}</option>
-		})
-
-		const comp = this;
 		return (
 			<div className="Editor">
 				<div className="Editor-container">

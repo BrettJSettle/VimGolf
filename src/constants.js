@@ -186,7 +186,7 @@ export const modes = ["apl", "asciiarmor", "asn.1", "asterisk", "brainfuck", "cl
 "sas", "sass", "scheme", "shell", "sieve", "slim", "smalltalk", "smarty", "solr", "soy", "sparql", "spreadsheet", "sql", "stex", "stylus", 
 "swift", "tcl", "textile", "tiddlywiki", "tiki", "toml", "tornado", "troff", "ttcn", "ttcn-cfg", "turtle", "twig", "vb", "vbscript", "velocity", 
 "verilog", "vhdl", "vue", "webidl", "xml", "xquery", "yacas", "yaml", "yaml-frontmatter", "z80"]
-
+/*
 function getItems(vars)  {
   var items = [];
   vars.forEach(function (a){
@@ -194,7 +194,7 @@ function getItems(vars)  {
   });
   return items;
 }
-
+*/
 export const tasks = [
 	{start: {
 			text: "",

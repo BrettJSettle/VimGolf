@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {themes, modes} from './constants.js'
 import './css/Toolbar.css'
 
@@ -31,6 +31,10 @@ const Toolbar = (props) => {
 				</li>
 			</ul>
 			<ul className="button-list right">
+				{props.task !== undefined &&
+					<li>
+					<button className="browse" onClick={() => { props.onChange("task", undefined) }}>Clear Task</button>
+				</li>}
 				<li>
 					<button className="browse" onClick={props.toggleBrowser}>{props.browsing ? "View Task" : "Browse Tasks"}</button>
 				</li>
