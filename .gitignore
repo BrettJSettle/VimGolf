@@ -2,7 +2,7 @@
 
 # dependencies
 /node_modules
-
+service-worker.js
 # testing
 /coverage
 
