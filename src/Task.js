@@ -26,8 +26,10 @@ export default class TaskView extends Component{
 		return (<div className="Task-content">
 				<div className="TaskInfo">
 					<div className="TaskTitle">
-						<h3>{task.name}<button onClick={this.props.onRestart}><FA name="undo"/></button></h3>
-						<a href={"http://vimgolf.com/" + task.url} className="info"><FA name={"embed"}/></a>
+						<h3>{task.name}
+							<button onClick={this.props.onRestart}><FA name="undo"/></button>
+							<a href={"http://vimgolf.com/" + task.url} className="info"><FA name="link"/></a>
+						</h3>
 					</div>
 					<Editor id="goalEditor"
 						value={this.props.task.out}
